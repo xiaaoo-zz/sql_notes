@@ -146,3 +146,58 @@ CREATE TABLE Feedback (
   feedbackDetails TEXT
 );
 ```
+
+## 5 SQL queries
+
+### 5.1 find customers with the most frequent purchases
+
+```sql
+SELECT customerName, customerAge, customerPhoneNumber,
+  (SELECT COUNT(*)
+    FROM Order
+    WHERE Order.customerID = Customer.CustomerID) AS orders
+  FROM Customer,
+  GROUP BY customerName
+  ORDER BY orders DESC;
+```
+
+
+### 5.2 find the top 5 selling book
+```sql
+SELECT bookISBN, bookTitle
+  (SELECT COUNT(*)
+    FROM Order
+    WHERE Order.bookISBN = Book.bookISBN) AS sales
+  FROM Book,
+  GROUP BY customerName
+  ORDER BY sales DESC
+  LIMIT 5;
+```
+
+### 5.3 book feedback
+```sql
+SELECT AVG(feedbackRating)
+  (SELECT bookISBN
+    FROM Order
+    WHERE Order.orderID = Feedback.orderID)
+  FROM Feedback
+```
+
+
+### 5.4 sales in age distributions
+```sql
+-- NOT FINISHED
+SELECT
+  customerAge,
+  IIF(customerAge < 20, "<20",
+  IIF(customerAge >= 20 AND customerAge < 25, "20-24",
+  IIF(customerAge >= 25 AND customerAge < 30, "25-29",
+  IIF(customerAge >= 35 AND customerAge < 35, "30-34",
+  IIF(customerAge >= 35 AND customerAge < 40, "35-40",
+  IIF(customerAge > 40, ">40")))))) AS AgeDistribution,
+  (SELECT COUNT(*)
+    FROM Order
+    WHERE )
+  FROM Customer
+  ORDER BY sales DESC;
+```
