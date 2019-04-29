@@ -1,3 +1,15 @@
+# 5 SQL queries
+
+### Online, offline, and cross-channel customers
+
+### Online/ Physical bookstore managers
+
+### Customer relationship managers
+
+### After-sale service managers
+
+
+
 ## 4 Implementation
 
 ### 4.1 Create table Book
@@ -147,7 +159,7 @@ CREATE TABLE Feedback (
 );
 ```
 
-## 5 SQL queries
+# 5 SQL queries
 
 ### 5.1 find customers with the most frequent purchases
 
