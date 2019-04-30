@@ -1,52 +1,16 @@
-# 5 SQL queries
+# SQL queries
 
-### Online, offline, and cross-channel customers
+* [Online, offline, and cross-channel customers](#customer)
+* [Online/ Physical bookstore managers
+](#manager)
+* [CRM](#CRM)
+* [After-sale service managers](#Aftersales)
 
-### Online/ Physical bookstore managers
+## Customer
 
-### Customer relationship managers
+没想到什么复杂的功能 best selling book？
 
-### After-sale service managers
-
-
-
-## 4 Implementation
-
-### 4.1 Create table Book
-```sql
-CREATE TABLE Book (
-  bookISBN NUMBER PRIMARY KEY,
-  bookTitle TEXT, -- e
-  bookPrice TEXT,
-  -- bookQuantity NUMBER,
-  -- bookLocationID NUMBER,
-  bookAuthorFirstName TEXT,
-  bookAuthorSurname TEXT, -- e
-  bookEdition NUMBER,
-  -- bookLanguage TEXT,
-  bookPublisher TEXT,
-  -- bookPublicationDate DATE
-
-  -- why do we need `book quantity`
-);
-```
-
-### 4.2 create table staff
-
-```sql
-CREATE TABLE Staff (
-  staffID TEXT PRIMARY KEY,
-  staffPhoneNumber TEXT,
-  staffPosition TEXT,
-  staffFirstName TEXT,
-  staffSurname TEXT,
-  staffEmail TEXT, -- ++
-  staffGender TEXT -- ++
-  -- 感觉有必要加一个staff属于哪个branch的reference 但是这样会导致一个他可能属于physical 或online store
-);
-```
-
-### 4.3 create table customer
+### 1.1 create membership
 ```sql
 CREATE TABLE Customer (
   customerID TEXT PRIMARY KEY,
@@ -62,26 +26,10 @@ CREATE TABLE Customer (
   customerAddressDetails TEXT,
   customerVIPLevel NUMBER,
   managerID TEXT REFERENCES Manager(ManagerID)
-  -- DELETE Zip Code
-  -- Customer Level (去年有一个单独弄出来了一个Table
 )
 ```
 
-### 4.4 create table manager
-```SQL
-CREATE TABLE Manager (
-  managerID TEXT PRIMARY KEY,
-  managerPhoneNumber TEXT,
-  managerPosition TEXT,
-  managerFirstName TEXT,
-  managerSurname TEXT,
-  managerEmail TEXT, -- ++
-  managerDepartment TEXT,
-  -- managerGender TEXT -- ++
-  -- 感觉有必要加一个staff属于哪个branch的reference 但是这样会导致一个他可能属于physical 或online store
-);
-```
-### 4.5 create table order
+### 1.2 create table order
 ```sql
 CREATE TABLE Order (
   orderID TEXT PRIMARY KEY,
@@ -96,10 +44,40 @@ CREATE TABLE Order (
   orderDiscount NUMBER, -- ??
   orderTotalPrice NUMBER NOT NULL,
   orderDate DATE NOT NULL,
-  -- 1. How to handle storeID, as a foreign key cannot reference to multiple tables
-  -- 2. do we need Table `OrderDetail`?
 );
 ```
+
+
+### 1.3 insert and update feedback
+```sql
+CREATE TABLE OrderDetails (
+  orderID TEXT PRIMARY KEY, -- only one primary key is enough
+  bookISNB TEXT NOT NULL Book(bookISBN),
+  orderQuantity NUMBER NOT NULL,
+);
+```
+
+---
+
+## Manager
+
+to find the best selling books based on users' rating
+
+
+---
+
+## CRM
+
+to find the customer with most purchases in a given period of time
+
+
+---
+
+## Aftersales
+
+
+
+---
 
 ### 4.5.1 create table order details
 ```sql
@@ -110,35 +88,6 @@ CREATE TABLE OrderDetails (
 );
 ```
 
-### 4.6 create table store
-```sql
-CREATE TABLE Store (
-  storeID TEXT PRIMARY KEY,
-  storeType TEXT NOT NULL,
-  managerID TEXT REFERENCES Manager(managerID),
-  storeDistrict TEXT,
-  storeAdressDetails TEXT
-);
-```
-
-### 4.7 create table warehouse
-```sql
-CREATE TABLE Warehouse (
-  warehouseID TEXT PRIMARY KEY,
-  warehousePhoneNumber TEXT,
-  warehouseAdressDetetails TEXT,
-  managerID TEXT REFERENCES Manager(managerID),
-);
-```
-
-### 4.8 create table express
-```sql
-CREATE TABLE Express (
-  expresID TEXT PRIMARY KEY,
-  expressCompany TEXT,
-  expressProcess TEXT,
-);
-```
 
 ### 4.8 create table aftersale service
 ```sql
