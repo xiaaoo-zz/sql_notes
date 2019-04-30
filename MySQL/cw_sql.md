@@ -10,6 +10,11 @@
 
 没想到什么复杂的功能 best selling book？
 
+age distribution??
+
+number of new customers across time?
+
+
 ### 1.1 create membership
 ```sql
 CREATE TABLE Customer (
@@ -57,23 +62,29 @@ CREATE TABLE OrderDetails (
 );
 ```
 
----
+
 
 ## Manager
 
-to find the best selling books based on users' rating
+to find the best selling books based on users' rating **across time**
 
 
----
+
 
 ## CRM
 
-to find the customer with most purchases in a given period of time
+to find the customer with most purchases in a given period of time and probably catigorized them into different groups based on their gender and age, to see which type (age and gender) of customer accounts for the most revenues -> target them in the future
 
 
----
+
 
 ## Aftersales
+
+relationship bwtween number of exchanges/returns with different products
+
+relationship bwtween number of exchanges/returns with different customer groups 
+
+
 
 
 
