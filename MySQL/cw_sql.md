@@ -35,7 +35,8 @@ FROM Query1TransactionCustomer;
 
 This calculates the average consumption rounded in 1 decimal of each age group.
 ```sql
-SELECT Q1AgeDistribution.ageDistribution, ROUND( AVG (Q1AgeDistribution.totalAmount), 1) AS averageConsumption
+SELECT Q1AgeDistribution.ageDistribution,
+ROUND( AVG (Q1AgeDistribution.totalAmount), 1) AS averageConsumption
 FROM Q1AgeDistribution
 GROUP BY Q1AgeDistribution.ageDistribution
 ORDER BY Q1AgeDistribution.ageDistribution;
@@ -111,7 +112,11 @@ to find the customer with most purchases in a given period of time and probably 
 ```sql
 -- age gender
 -- Join relevant tables: customer, transaction, transactiondetail, book
-SELECT Transaction.transactionID, Book.bookGenre, TransactionDetail.quantity, Customer.customerAge, Customer.customerCity, Customer.customerVIPLevel, Customer.customerGender, Transaction.TransactionDate
+SELECT Transaction.transactionID, Book.bookGenre,
+TransactionDetail.quantity, Customer.customerAge,
+Customer.customerCity, Customer.customerVIPLevel,
+Customer.customerGender,
+Transaction.TransactionDate
 FROM (([Transaction] 
 INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID) 
 INNER JOIN Customer ON Customer.customerID = Transaction.customerID)
@@ -175,6 +180,30 @@ relationship bwtween number of exchanges/returns with different products
 relationship bwtween number of exchanges/returns with different customer groups
 
 
+fetch book information
+```sql
+SELECT Transaction.transactionID, Book.bookGenre, TransactionDetail.quantity, Customer.customerAge, Customer.customerCity, Customer.customerVIPLevel, Customer.customerGender, Transaction.TransactionDate
+FROM (([Transaction] INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID) INNER JOIN Customer ON Customer.customerID = Transaction.customerID) INNER JOIN Book ON Book.bookISBN = TransactionDetail.bookISBN
+ORDER BY Transaction.transactionID;
+```
+
+fetch customer information
+```sql
+SELECT AftersalesService.aftersalesServiceID,  AftersalesService.aftersalesServiceType, Customer.customerFirstName, Customer.customerSurname, Customer.customerPhoneNumber, Customer.customerEmail, Customer.customerVIPLevel
+FROM ([AftersalesService] INNER JOIN Transaction ON AftersalesService.transactionID = Transaction.transactionID) INNER JOIN Customer ON Transaction.customerID = Customer.customerID
+ORDER BY AftersalesService.aftersalesServiceID;
+```
+
+
+-- offline or online with the most returns/exchanges
+```sql
+SELECT Q4Customer.customerID, Transaction.transactionID, 
+IIF(IsNull(Transaction.expressID) = true, "offline",
+IIF(IsNull(Transaction.expressID) = false, "online")) AS [ONLINE/OFFLINE],
+Transaction.expressID
+FROM Q4Customer, Transaction
+WHERE Q4Customer.customerID = Transaction.customerID ;
+```
 
 
 
