@@ -12,7 +12,9 @@ number of new customers across time?
 
 The following statement selects all transaction with customer and transaction amount.
 ```sql
-SELECT Transaction.transactionID, Transaction.customerID, TransactionDetail.totalAmount, Customer.customerAge, Customer.customerGender
+SELECT Transaction.transactionID, Transaction.customerID,
+TransactionDetail.totalAmount, Customer.customerAge,
+Customer.customerGender
 FROM ((Transaction
 INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID)
 INNER JOIN Customer ON Customer.customerID = Transaction.customerID)
@@ -41,7 +43,8 @@ ORDER BY Q1AgeDistribution.ageDistribution;
 
 This can show us the average consumoption between female and male.
 ```sql
-SELECT Q1TransactionCustomer.customerGender, ROUND(AVG(Q1TransactionCustomer.totalAmount), 1) AS averageConsumption
+SELECT Q1TransactionCustomer.customerGender,
+ROUND(AVG(Q1TransactionCustomer.totalAmount), 1) AS averageConsumption
 FROM Q1TransactionCustomer
 GROUP BY Q1TransactionCustomer.customerGender;
 ```
@@ -53,8 +56,12 @@ to find the best selling books based on users' rating **across time**
 
 group three tables with relavent information together
 ```sql
-SELECT Transaction.transactionID, TransactionDetail.quantity, TransactionDetail.totalAmount AS revenue, Book.bookISBN, Book.bookTitle, Book.bookGenre, Transaction.transactionDate
-FROM ([Transaction] INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID) INNER JOIN Book ON Book.bookISBN = TransactionDetail.bookISBN
+SELECT Transaction.transactionID, TransactionDetail.quantity,
+TransactionDetail.totalAmount AS revenue, Book.bookISBN,
+Book.bookTitle, Book.bookGenre,
+Transaction.transactionDate
+FROM ([Transaction] INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID)
+INNER JOIN Book ON Book.bookISBN = TransactionDetail.bookISBN
 ORDER BY Transaction.transactionID;
 ```
 
