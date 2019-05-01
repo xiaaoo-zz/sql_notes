@@ -108,6 +108,60 @@ PIVOT bookGenre;
 to find the customer with most purchases in a given period of time and probably catigorized them into different groups based on their gender and age, to see which type (age and gender) of customer accounts for the most revenues -> target them in the future
 
 
+```sql
+-- age gender
+-- Join relevant tables: customer, transaction, transactiondetail, book
+SELECT Transaction.transactionID, Book.bookGenre, TransactionDetail.quantity, Customer.customerAge, Customer.customerCity, Customer.customerVIPLevel, Customer.customerGender, Transaction.TransactionDate
+FROM (([Transaction] 
+INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID) 
+INNER JOIN Customer ON Customer.customerID = Transaction.customerID)
+INNER JOIN Book ON Book.bookISBN = TransactionDetail.bookISBN
+ORDER BY Transaction.transactionID;
+```
+
+
+
+
+sales across gender and age
+```sql
+-- age gender city
+SELECT Q3CRM.customerAge, Q3CRM.quantity, Q3CRM.customerCity,
+SWITCH (
+customerGender = "F" AND customerAge < 20, "Female <20",
+customerGender = "F" AND customerAge >= 20 AND customerAge < 25 , "Female 20-24",
+customerGender = "F" AND customerAge >= 25 AND customerAge < 30, "Female 25-29",
+customerGender = "F" AND customerAge >= 30 AND customerAge < 35, "Female 30-34",
+customerGender = "F" AND customerAge >= 35 AND customerAge < 40, "Female 35-40",
+customerGender = "F" AND customerAge > 40, "Female >40",
+
+customerGender = "M" AND customerAge < 20, "Male <20",
+customerGender = "M" AND customerAge >= 20 AND customerAge < 25 , "Male 20-24",
+customerGender = "M" AND customerAge >= 25 AND customerAge < 30, "Male 25-29",
+customerGender = "M" AND customerAge >= 30 AND customerAge < 35, "Male 30-34",
+customerGender = "M" AND customerAge >= 35 AND customerAge < 40, "Male 35-40",
+customerGender = "M" AND customerAge > 40, "Male >40"
+) AS ageGender
+FROM Q3CRM;
+
+```
+
+
+
+```sql
+-- age gender city
+SELECT Q3AgeGender.ageGender, Q3AgeGender.customerCity, ROUND( AVG (Q3AgeGender.quantity), 1) AS sales
+FROM Q3AgeGender
+GROUP BY Q3AgeGender.ageGender, Q3AgeGender.customerCity
+ORDER BY Q3AgeGender.ageGender;
+
+-- age gender city matrix
+-- nz(,0) sets a cell's value to 0 if sales equals to Null originally
+TRANSFORM nz(Max(sales), 0)
+SELECT customerCity
+FROM Q3AgeGenderCity
+GROUP BY customerCity
+PIVOT ageGender;
+```
 
 
 ## Aftersales
