@@ -8,61 +8,43 @@
 
 ## Customer
 
-没想到什么复杂的功能 best selling book？
-
-age distribution??
-
 number of new customers across time?
 
-
-### 1.1 create membership
+The following statement selects all transaction with customer and transaction amount.
 ```sql
-CREATE TABLE Customer (
-  customerID TEXT PRIMARY KEY,
-  customerFirstName TEXT,
-  customerSurname TEXT, -- e
-  customerEmail TEXT,
-  customerAge NUMBER,
-  customerGender TEXT,
-  customerCustomerLevel TEXT NOT NULL,
-  customerProvince TEXT,
-  customerCity TEXT,
-  customerDistrict TEXT,
-  customerAddressDetails TEXT,
-  customerVIPLevel NUMBER,
-  managerID TEXT REFERENCES Manager(ManagerID)
-)
+SELECT Transaction.transactionID, Transaction.customerID, TransactionDetail.totalAmount, Customer.customerAge, Customer.customerGender
+FROM ((Transaction
+INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID)
+INNER JOIN Customer ON Customer.customerID = Transaction.customerID)
+ORDER BY Transaction.transactionID;
 ```
 
-### 1.2 create table order
+This created a new attribution **age distribution** to categorize all customers into correspounding age groups.
 ```sql
-CREATE TABLE Order (
-  orderID TEXT PRIMARY KEY,
-  bookISBN TEXT NOT NULL Book(bookISBN),
-  customerID TEXT REFERENCES Customer(customerID),
-  staffID TEXT NOT NULL REFERENCES Staff(staffID),
-  expressID TEXT REFERENCES Express(expressID),
-  storeID TEXT REFERENCES Store(StoreID),
-  orderType TEXT NOT NULL,
-  orderStatus TEXT,
-  orderPaymentMethod TEXT NOT NULL,
-  orderDiscount NUMBER, -- ??
-  orderTotalPrice NUMBER NOT NULL,
-  orderDate DATE NOT NULL,
-);
+SELECT Query1TransactionCustomer.customerAge,  Query1TransactionCustomer.totalAmount,
+IIF(customerAge < 20, "<20",
+IIF(customerAge >= 20 AND customerAge < 25, "20-24",
+IIF(customerAge >= 25 AND customerAge < 30, "25-29",
+IIF(customerAge >= 30 AND customerAge < 35, "30-34",
+IIF(customerAge >= 35 AND customerAge < 40, "35-40",
+IIF(customerAge > 40, ">40")))))) AS AgeDistribution
+FROM Query1TransactionCustomer;
 ```
 
-
-### 1.3 insert and update feedback
+This calculates the average consumption rounded in 1 decimal of each age group.
 ```sql
-CREATE TABLE OrderDetails (
-  orderID TEXT PRIMARY KEY, -- only one primary key is enough
-  bookISNB TEXT NOT NULL Book(bookISBN),
-  orderQuantity NUMBER NOT NULL,
-);
+SELECT Q1AgeDistribution.ageDistribution, ROUND( AVG (Q1AgeDistribution.totalAmount), 1) AS averageConsumption
+FROM Q1AgeDistribution
+GROUP BY Q1AgeDistribution.ageDistribution
+ORDER BY Q1AgeDistribution.ageDistribution;
 ```
 
-
+This can show us the average consumoption between female and male.
+```sql
+SELECT Q1TransactionCustomer.customerGender, ROUND(AVG(Q1TransactionCustomer.totalAmount), 1) AS averageConsumption
+FROM Q1TransactionCustomer
+GROUP BY Q1TransactionCustomer.customerGender;
+```
 
 ## Manager
 
@@ -82,7 +64,7 @@ to find the customer with most purchases in a given period of time and probably 
 
 relationship bwtween number of exchanges/returns with different products
 
-relationship bwtween number of exchanges/returns with different customer groups 
+relationship bwtween number of exchanges/returns with different customer groups
 
 
 
