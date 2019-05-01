@@ -163,6 +163,10 @@ GROUP BY customerCity
 PIVOT ageGender;
 ```
 
+The result of the above query is then exported to excel to create this colored sales analysis with respect to gender, age, and location.
+![Sales Matrix](salesMatrix.JPG)
+
+
 
 ## Aftersales
 
