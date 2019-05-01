@@ -46,9 +46,52 @@ FROM Q1TransactionCustomer
 GROUP BY Q1TransactionCustomer.customerGender;
 ```
 
+
 ## Manager
 
 to find the best selling books based on users' rating **across time**
+
+group three tables with relavent information together
+```sql
+SELECT Transaction.transactionID, TransactionDetail.quantity, TransactionDetail.totalAmount AS revenue, Book.bookISBN, Book.bookTitle, Book.bookGenre, Transaction.transactionDate
+FROM ([Transaction] INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID) INNER JOIN Book ON Book.bookISBN = TransactionDetail.bookISBN
+ORDER BY Transaction.transactionID;
+```
+
+this is the monthly and quarterly sales
+```sql
+SELECT DATEPART('q',  Q2BookSales.transactionDate) AS Quarter,
+MONTHNAME(DATEPART('m',  Q2BookSales.transactionDate), TRUE) AS Month, 
+COUNT(*) AS Sales, 
+ROUND( SUM(Q2BookSales.revenue)) as monthlyRevenue
+FROM Q2BookSales
+GROUP BY DATEPART('q', Q2BookSales.transactionDate), DATEPART('m', Q2BookSales.transactionDate)
+ORDER BY 1, 2;
+```
+
+get the best selling books across time
+```sql
+SELECT bookISBN, bookTitle, SUM(quantity) AS totalSales
+FROM Q2BookSales
+GROUP BY bookISBN,  bookTitle
+ORDER BY  SUM(quantity) DESC;
+```
+
+get genre monthly sale matrix
+```sql
+-- get a list
+SELECT MonthName(Month(transactionDate)) as month, bookGenre,  COUNT(quantity) as sales
+FROM Q2BookSales
+GROUP BY Month(transactionDate), bookGenre;
+
+-- get the matrix
+TRANSFORM Max(sales)
+SELECT month
+FROM Q2MonthGenreSale
+GROUP BY month
+PIVOT bookGenre;
+```
+
 
 
 
