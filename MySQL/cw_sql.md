@@ -64,7 +64,8 @@ SELECT Transaction.transactionID, TransactionDetail.quantity,
 TransactionDetail.totalAmount AS revenue, Book.bookISBN,
 Book.bookTitle, Book.bookGenre,
 Transaction.transactionDate
-FROM ([Transaction] INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID)
+FROM ([Transaction]
+INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID)
 INNER JOIN Book ON Book.bookISBN = TransactionDetail.bookISBN
 ORDER BY Transaction.transactionID;
 ```
@@ -157,7 +158,8 @@ FROM Q3CRM;
 
 ```sql
 -- age gender city
-SELECT Q3AgeGender.ageGender, Q3AgeGender.customerCity, ROUND( AVG (Q3AgeGender.quantity), 1) AS sales
+SELECT Q3AgeGender.ageGender, Q3AgeGender.customerCity,
+ROUND( AVG (Q3AgeGender.quantity), 1) AS sales
 FROM Q3AgeGender
 GROUP BY Q3AgeGender.ageGender, Q3AgeGender.customerCity
 ORDER BY Q3AgeGender.ageGender;
@@ -192,8 +194,13 @@ ORDER BY Transaction.transactionID;
 
 fetch customer information
 ```sql
-SELECT AftersalesService.aftersalesServiceID,  AftersalesService.aftersalesServiceType, Customer.customerFirstName, Customer.customerSurname, Customer.customerPhoneNumber, Customer.customerEmail, Customer.customerVIPLevel
-FROM ([AftersalesService] INNER JOIN Transaction ON AftersalesService.transactionID = Transaction.transactionID) INNER JOIN Customer ON Transaction.customerID = Customer.customerID
+SELECT AftersalesService.aftersalesServiceID,  AftersalesService.aftersalesServiceType,
+Customer.customerFirstName, Customer.customerSurname,
+Customer.customerPhoneNumber, Customer.customerEmail,
+Customer.customerVIPLevel
+FROM ([AftersalesService]
+INNER JOIN Transaction ON AftersalesService.transactionID = Transaction.transactionID)
+INNER JOIN Customer ON Transaction.customerID = Customer.customerID
 ORDER BY AftersalesService.aftersalesServiceID;
 ```
 
