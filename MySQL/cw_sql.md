@@ -187,8 +187,13 @@ relationship bwtween number of exchanges/returns with different customer groups
 
 fetch book information
 ```sql
-SELECT Transaction.transactionID, Book.bookGenre, TransactionDetail.quantity, Customer.customerAge, Customer.customerCity, Customer.customerVIPLevel, Customer.customerGender, Transaction.TransactionDate
-FROM (([Transaction] INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID) INNER JOIN Customer ON Customer.customerID = Transaction.customerID) INNER JOIN Book ON Book.bookISBN = TransactionDetail.bookISBN
+SELECT Transaction.transactionID, Book.bookGenre, TransactionDetail.quantity,
+Customer.customerAge, Customer.customerCity, Customer.customerVIPLevel,
+Customer.customerGender, Transaction.TransactionDate
+FROM (([Transaction]
+INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID)
+INNER JOIN Customer ON Customer.customerID = Transaction.customerID)
+INNER JOIN Book ON Book.bookISBN = TransactionDetail.bookISBN
 ORDER BY Transaction.transactionID;
 ```
 
