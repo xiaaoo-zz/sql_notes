@@ -27,14 +27,14 @@ ORDER BY Transaction.transactionID;
 This created a new attribution **age distribution** to categorize all customers into correspounding age groups.
 ```sql
 -- q1 age distribution
-SELECT Query1TransactionCustomer.customerAge,  Query1TransactionCustomer.totalAmount,
+SELECT Q1TransactionCustomer.customerAge, Q1TransactionCustomer.totalAmount,
 IIF(customerAge < 20, "<20",
 IIF(customerAge >= 20 AND customerAge < 25, "20-24",
 IIF(customerAge >= 25 AND customerAge < 30, "25-29",
 IIF(customerAge >= 30 AND customerAge < 35, "30-34",
 IIF(customerAge >= 35 AND customerAge < 40, "35-40",
-IIF(customerAge >= 40, ">= 40")))))) AS AgeDistribution
-FROM Query1TransactionCustomer;
+IIF(customerAge >= 40, ">=40")))))) AS ageDistribution
+FROM Q1TransactionCustomer;
 ```
 
 This calculates the average consumption rounded in 1 decimal of each age group.
