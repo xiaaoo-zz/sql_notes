@@ -44,7 +44,7 @@ SELECT Q1AgeDistribution.ageDistribution,
 ROUND( AVG (Q1AgeDistribution.totalAmount), 1) AS averageConsumption
 FROM Q1AgeDistribution
 GROUP BY Q1AgeDistribution.ageDistribution
-ORDER BY Q1AgeDistribution.ageDistribution;
+ORDER BY 2 DESC;
 ```
 
 This can show us the average consumoption between female and male.
