@@ -114,11 +114,6 @@ FROM Q2MonthGenreSale
 GROUP BY month
 PIVOT bookGenre;
 ```
-```
-
-
-
-
 
 ## CRM
 
@@ -160,7 +155,6 @@ customerGender = "M" AND customerAge >= 35 AND customerAge < 40, "Male 35-40",
 customerGender = "M" AND customerAge > 40, "Male >40"
 ) AS ageGender
 FROM Q3CRM;
-
 ```
 
 
