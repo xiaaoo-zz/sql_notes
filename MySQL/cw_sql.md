@@ -125,7 +125,7 @@ PIVOT bookGenre;
 to find the customer with most purchases in a given period of time and probably catigorized them into different groups based on their gender and age, to see which type (age and gender) of customer accounts for the most revenues -> target them in the future
 
 
-```sql
+```SQL
 -- q3CRM
 -- Join relevant tables: customer, transaction, transactiondetail, book
 SELECT Transaction.transactionID, Book.bookGenre,
@@ -139,9 +139,6 @@ INNER JOIN Customer ON Customer.customerID = Transaction.customerID)
 INNER JOIN Book ON Book.bookISBN = TransactionDetail.bookISBN
 ORDER BY Transaction.transactionID;
 ```
-
-
-
 
 sales across gender and age
 ```sql
@@ -238,8 +235,13 @@ WHERE Q4Customer.customerID = Transaction.customerID ;
 
 ```SQL
 -- q4CustomerSalesReturn
-SELECT AftersalesService.aftersalesServiceID, AftersalesService.aftersalesServiceType, Customer.customerID, Customer.customerFirstName, Customer.customerSurname, Customer.customerPhoneNumber, Customer.customerEmail, Customer.customerVIPLevel
-FROM (AftersalesService INNER JOIN [Transaction] ON AftersalesService.transactionID = Transaction.transactionID) INNER JOIN Customer ON Transaction.customerID = Customer.customerID
+SELECT AftersalesService.aftersalesServiceID, AftersalesService.aftersalesServiceType,
+Customer.customerID, Customer.customerFirstName,
+Customer.customerSurname, Customer.customerPhoneNumber,
+Customer.customerEmail, Customer.customerVIPLevel
+FROM (AftersalesService
+INNER JOIN [Transaction] ON AftersalesService.transactionID = Transaction.transactionID)
+INNER JOIN Customer ON Transaction.customerID = Customer.customerID
 WHERE  aftersalesServiceType = "Sales return"
 ORDER BY AftersalesService.aftersalesServiceID;
 ```
