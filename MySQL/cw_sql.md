@@ -17,11 +17,10 @@ The following statement selects all transaction with customer and transaction am
 ```sql
 -- q1 transaction customer
 SELECT Transaction.transactionID, Transaction.customerID,
-TransactionDetail.totalAmount, Customer.customerAge,
-Customer.customerGender
-FROM ((Transaction
-INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID)
-INNER JOIN Customer ON Customer.customerID = Transaction.customerID)
+Transaction.transactionTotalPrice as totalAmount,
+Customer.customerAge, Customer.customerGender
+FROM [Transaction]
+INNER JOIN Customer ON Customer.customerID = Transaction.customerID
 ORDER BY Transaction.transactionID;
 ```
 
@@ -65,13 +64,12 @@ to find the best selling books based on users' rating **across time**
 group three tables with relavent information together
 ```sql
 -- q2book sales
-SELECT Transaction.transactionID, TransactionDetail.quantity,
-TransactionDetail.totalAmount AS revenue, Book.bookISBN,
-Book.bookTitle, Book.bookGenre,
-Transaction.transactionDate
+SELECT Transaction.transactionID, TransactionDetail.[transactionQuantity],
+Transaction.transactionTotalPrice AS revenue, Book.ISBN,
+Book.bookName AS bookTitle, Book.bookGenre, Transaction.transactionDate
 FROM ([Transaction]
 INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID)
-INNER JOIN Book ON Book.bookISBN = TransactionDetail.bookISBN
+NNER JOIN Book ON Book.ISBN = TransactionDetail.ISBN
 ORDER BY Transaction.transactionID;
 ```
 
@@ -90,17 +88,17 @@ ORDER BY 1, 2;
 get the best selling books across time
 ```sql
 -- Q2best selling books
-SELECT bookISBN, bookTitle, SUM(quantity) AS totalSales
+SELECT ISBN, bookTitle, SUM(transactionQuantity) AS totalSales
 FROM Q2BookSales
-GROUP BY bookISBN,  bookTitle
-ORDER BY SUM(quantity) DESC;
+GROUP BY ISBN, bookTitle
+ORDER BY SUM(transactionQuantity) DESC;
 ```
 
 get genre monthly sale matrix
 ```sql
--- q2genre  monthly sales
+-- q2genre monthly sales
 -- get a list
-SELECT MonthName(Month(transactionDate)) as month, bookGenre,  COUNT(quantity) as sales
+SELECT MonthName(Month(transactionDate)) as month, bookGenre,  COUNT(transactionQuantity) as sales
 FROM Q2BookSales
 GROUP BY Month(transactionDate), bookGenre;
 ```
@@ -124,15 +122,15 @@ to find the customer with most purchases in a given period of time and probably 
 -- q3CRM
 -- Join relevant tables: customer, transaction, transactiondetail, book
 SELECT Transaction.transactionID, Book.bookGenre,
-TransactionDetail.quantity, Customer.customerAge,
-Customer.customerCity, Customer.customerVIPLevel,
-Customer.customerGender,
-Transaction.TransactionDate
-FROM (([Transaction] 
-INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID) 
+TransactionDetail.[transactionQuantity] as quantity, Customer.customerAge,
+Customer.customerCity, Customer.[customerVIP Level],
+Customer.customerGender, Transaction.TransactionDate
+FROM (([Transaction]
+INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID)
 INNER JOIN Customer ON Customer.customerID = Transaction.customerID)
-INNER JOIN Book ON Book.bookISBN = TransactionDetail.bookISBN
+INNER JOIN Book ON Book.ISBN = TransactionDetail.ISBN
 ORDER BY Transaction.transactionID;
+
 ```
 
 sales across gender and age
@@ -191,14 +189,12 @@ relationship bwtween number of exchanges/returns with different customer groups
 fetch book information
 ```sql
 -- q4book
-SELECT Transaction.transactionID, Book.bookGenre, TransactionDetail.quantity,
-Customer.customerAge, Customer.customerCity, Customer.customerVIPLevel,
-Customer.customerGender, Transaction.TransactionDate
-FROM (([Transaction]
-INNER JOIN TransactionDetail ON Transaction.transactionID = TransactionDetail.transactionID)
-INNER JOIN Customer ON Customer.customerID = Transaction.customerID)
-INNER JOIN Book ON Book.bookISBN = TransactionDetail.bookISBN
-ORDER BY Transaction.transactionID;
+SELECT AftersalesService.aftersalesServiceID, AftersalesService.aftersalesServiceType,
+Book.ISBN, Book.bookName AS bookTitle, Book.bookGenre
+FROM (AftersalesService
+INNER JOIN TransactionDetail ON AftersalesService.transactionID = TransactionDetail.transactionID)
+INNER JOIN Book ON Book.ISBN = TransactionDetail.ISBN
+ORDER BY AftersalesService.aftersalesServiceID;
 ```
 
 fetch customer information
