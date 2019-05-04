@@ -15,6 +15,7 @@ number of new customers across time?
 
 The following statement selects all transaction with customer and transaction amount.
 ```sql
+-- q1 transaction customer
 SELECT Transaction.transactionID, Transaction.customerID,
 TransactionDetail.totalAmount, Customer.customerAge,
 Customer.customerGender
@@ -26,6 +27,7 @@ ORDER BY Transaction.transactionID;
 
 This created a new attribution **age distribution** to categorize all customers into correspounding age groups.
 ```sql
+-- q1 age distribution
 SELECT Query1TransactionCustomer.customerAge,  Query1TransactionCustomer.totalAmount,
 IIF(customerAge < 20, "<20",
 IIF(customerAge >= 20 AND customerAge < 25, "20-24",
@@ -38,6 +40,7 @@ FROM Query1TransactionCustomer;
 
 This calculates the average consumption rounded in 1 decimal of each age group.
 ```sql
+-- q1 consumption age
 SELECT Q1AgeDistribution.ageDistribution,
 ROUND( AVG (Q1AgeDistribution.totalAmount), 1) AS averageConsumption
 FROM Q1AgeDistribution
@@ -47,6 +50,7 @@ ORDER BY Q1AgeDistribution.ageDistribution;
 
 This can show us the average consumoption between female and male.
 ```sql
+-- consumption gender
 SELECT Q1TransactionCustomer.customerGender,
 ROUND(AVG(Q1TransactionCustomer.totalAmount), 1) AS averageConsumption
 FROM Q1TransactionCustomer
@@ -60,6 +64,7 @@ to find the best selling books based on users' rating **across time**
 
 group three tables with relavent information together
 ```sql
+-- q2book sales
 SELECT Transaction.transactionID, TransactionDetail.quantity,
 TransactionDetail.totalAmount AS revenue, Book.bookISBN,
 Book.bookTitle, Book.bookGenre,
@@ -72,6 +77,7 @@ ORDER BY Transaction.transactionID;
 
 this is the monthly and quarterly sales
 ```sql
+-- q2 quarterly sales
 SELECT DATEPART('q',  Q2BookSales.transactionDate) AS Quarter,
 MONTHNAME(DATEPART('m',  Q2BookSales.transactionDate), TRUE) AS Month, 
 COUNT(*) AS Sales, 
@@ -83,25 +89,31 @@ ORDER BY 1, 2;
 
 get the best selling books across time
 ```sql
+-- Q2best selling books
 SELECT bookISBN, bookTitle, SUM(quantity) AS totalSales
 FROM Q2BookSales
 GROUP BY bookISBN,  bookTitle
-ORDER BY  SUM(quantity) DESC;
+ORDER BY SUM(quantity) DESC;
 ```
 
 get genre monthly sale matrix
 ```sql
+-- q2genre  monthly sales
 -- get a list
 SELECT MonthName(Month(transactionDate)) as month, bookGenre,  COUNT(quantity) as sales
 FROM Q2BookSales
 GROUP BY Month(transactionDate), bookGenre;
+```
 
+```sql
+-- q2 genre monthly sale matrix
 -- get the matrix
 TRANSFORM Max(sales)
 SELECT month
 FROM Q2MonthGenreSale
 GROUP BY month
 PIVOT bookGenre;
+```
 ```
 
 
@@ -114,7 +126,7 @@ to find the customer with most purchases in a given period of time and probably 
 
 
 ```sql
--- age gender
+-- q3CRM
 -- Join relevant tables: customer, transaction, transactiondetail, book
 SELECT Transaction.transactionID, Book.bookGenre,
 TransactionDetail.quantity, Customer.customerAge,
@@ -133,7 +145,7 @@ ORDER BY Transaction.transactionID;
 
 sales across gender and age
 ```sql
--- age gender city
+-- q3ageGender
 SELECT Q3CRM.customerAge, Q3CRM.quantity, Q3CRM.customerCity,
 SWITCH (
 customerGender = "F" AND customerAge < 20, "Female <20",
@@ -157,14 +169,14 @@ FROM Q3CRM;
 
 
 ```sql
--- age gender city
+-- q3ageGenderCity
 SELECT Q3AgeGender.ageGender, Q3AgeGender.customerCity,
 ROUND( AVG (Q3AgeGender.quantity), 1) AS sales
 FROM Q3AgeGender
 GROUP BY Q3AgeGender.ageGender, Q3AgeGender.customerCity
 ORDER BY Q3AgeGender.ageGender;
 
--- age gender city matrix
+-- q3ageGenderCityMatrix
 -- nz(,0) sets a cell's value to 0 if sales equals to Null originally
 TRANSFORM nz(Max(sales), 0)
 SELECT customerCity
@@ -187,6 +199,7 @@ relationship bwtween number of exchanges/returns with different customer groups
 
 fetch book information
 ```sql
+-- q4book
 SELECT Transaction.transactionID, Book.bookGenre, TransactionDetail.quantity,
 Customer.customerAge, Customer.customerCity, Customer.customerVIPLevel,
 Customer.customerGender, Transaction.TransactionDate
@@ -199,6 +212,7 @@ ORDER BY Transaction.transactionID;
 
 fetch customer information
 ```sql
+-- q4customer
 SELECT AftersalesService.aftersalesServiceID,  AftersalesService.aftersalesServiceType,
 Customer.customerFirstName, Customer.customerSurname,
 Customer.customerPhoneNumber, Customer.customerEmail,
@@ -212,12 +226,22 @@ ORDER BY AftersalesService.aftersalesServiceID;
 
 -- offline or online with the most returns/exchanges
 ```sql
+-- q4OnlineOffline
 SELECT Q4Customer.customerID, Transaction.transactionID, 
 IIF(IsNull(Transaction.expressID) = true, "offline",
 IIF(IsNull(Transaction.expressID) = false, "online")) AS [ONLINE/OFFLINE],
 Transaction.expressID
 FROM Q4Customer, Transaction
 WHERE Q4Customer.customerID = Transaction.customerID ;
+```
+
+
+```SQL
+-- q4CustomerSalesReturn
+SELECT AftersalesService.aftersalesServiceID, AftersalesService.aftersalesServiceType, Customer.customerID, Customer.customerFirstName, Customer.customerSurname, Customer.customerPhoneNumber, Customer.customerEmail, Customer.customerVIPLevel
+FROM (AftersalesService INNER JOIN [Transaction] ON AftersalesService.transactionID = Transaction.transactionID) INNER JOIN Customer ON Transaction.customerID = Customer.customerID
+WHERE  aftersalesServiceType = "Sales return"
+ORDER BY AftersalesService.aftersalesServiceID;
 ```
 
 
