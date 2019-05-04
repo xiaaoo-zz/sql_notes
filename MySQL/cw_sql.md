@@ -33,7 +33,7 @@ IIF(customerAge >= 20 AND customerAge < 25, "20-24",
 IIF(customerAge >= 25 AND customerAge < 30, "25-29",
 IIF(customerAge >= 30 AND customerAge < 35, "30-34",
 IIF(customerAge >= 35 AND customerAge < 40, "35-40",
-IIF(customerAge > 40, ">40")))))) AS AgeDistribution
+IIF(customerAge >= 40, ">= 40")))))) AS AgeDistribution
 FROM Query1TransactionCustomer;
 ```
 
@@ -138,19 +138,19 @@ sales across gender and age
 -- q3ageGender
 SELECT Q3CRM.customerAge, Q3CRM.quantity, Q3CRM.customerCity,
 SWITCH (
-customerGender = "F" AND customerAge < 20, "Female <20",
+customerGender = "F" AND customerAge < 20, "Female < 20",
 customerGender = "F" AND customerAge >= 20 AND customerAge < 25 , "Female 20-24",
 customerGender = "F" AND customerAge >= 25 AND customerAge < 30, "Female 25-29",
 customerGender = "F" AND customerAge >= 30 AND customerAge < 35, "Female 30-34",
 customerGender = "F" AND customerAge >= 35 AND customerAge < 40, "Female 35-40",
-customerGender = "F" AND customerAge > 40, "Female >40",
+customerGender = "F" AND customerAge >= 40, "Female >= 40",
 
-customerGender = "M" AND customerAge < 20, "Male <20",
+customerGender = "M" AND customerAge < 20, "Male < 20",
 customerGender = "M" AND customerAge >= 20 AND customerAge < 25 , "Male 20-24",
 customerGender = "M" AND customerAge >= 25 AND customerAge < 30, "Male 25-29",
 customerGender = "M" AND customerAge >= 30 AND customerAge < 35, "Male 30-34",
 customerGender = "M" AND customerAge >= 35 AND customerAge < 40, "Male 35-40",
-customerGender = "M" AND customerAge > 40, "Male >40"
+customerGender = "M" AND customerAge >= 40, "Male >= 40"
 ) AS ageGender
 FROM Q3CRM;
 ```
