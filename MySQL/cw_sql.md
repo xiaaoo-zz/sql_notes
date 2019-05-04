@@ -209,6 +209,15 @@ WHERE Q4Customer.customerID = Transaction.customerID ;
 ```
 
 
+## Kimmy
+
+```sql
+SELECT Customer.customerID, Transaction.transactionTotalPrice,
+Customer.customerAge, Customer.customerGender
+FROM Customer, Transaction
+WHERE Customer.customerID = Transaction.customerID;
+```
+
 
 # legacies
 
@@ -240,8 +249,6 @@ CREATE TABLE Feedback (
   feedbackDetails TEXT
 );
 ```
-
-# 5 SQL queries
 
 ### 5.1 find customers with the most frequent purchases
 
